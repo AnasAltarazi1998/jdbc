@@ -26,7 +26,7 @@ public class App {
       System.out.println("Creating statement...");
       stmt = conn.createStatement();
       String sql;
-      sql = "insert into employees (first,last,age) values ('py','python',2)";
+      sql = "delete from employees where 1";
       int rows = stmt.executeUpdate(sql);
       System.out.println(rows + " rows effected");
       stmt.close();
