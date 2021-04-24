@@ -26,25 +26,9 @@ public class App {
       System.out.println("Creating statement...");
       stmt = conn.createStatement();
       String sql;
-      sql = "SELECT id, first, last, age FROM Employees";
-      ResultSet rs = stmt.executeQuery(sql);
-
-      //STEP 5: Extract data from result set
-      while(rs.next()){
-         //Retrieve by column name
-         int id  = rs.getInt("id");
-         int age = rs.getInt("age");
-         String first = rs.getString("first");
-         String last = rs.getString("last");
-
-         //Display values
-         System.out.print("ID: " + id);
-         System.out.print(", Age: " + age);
-         System.out.print(", First: " + first);
-         System.out.println(", Last: " + last);
-      }
-      //STEP 6: Clean-up environment
-      rs.close();
+      sql = "insert into employees (first,last,age) values ('py','python',2)";
+      int rows = stmt.executeUpdate(sql);
+      System.out.println(rows + " rows effected");
       stmt.close();
       conn.close();
    }catch(SQLException se){
