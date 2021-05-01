@@ -4,7 +4,7 @@ import java.sql.*;
 
 public class App {
    // JDBC driver name and database URL
-   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";  
+   static final String JDBC_DRIVER = "com.mysql.cj.jdbc.Driver";  
    static final String DB_URL = "jdbc:mysql://localhost/EMP?createDatabaseIfNotExist=true";
 
    //  Database credentials
@@ -16,7 +16,7 @@ public class App {
    Statement stmt = null;
    try{
       //STEP 2: Register JDBC driver
-      Class.forName("com.mysql.cj.jdbc.Driver");
+      Class.forName(JDBC_DRIVER);
 
       //STEP 3: Open a connection
       System.out.println("Connecting to database...");
@@ -26,30 +26,25 @@ public class App {
       System.out.println("Creating statement...");
       stmt = conn.createStatement();
       String sql;
-      sql = "SELECT id, first, last, age FROM Employees";
-      ResultSet rs = stmt.executeQuery(sql);
-
-      //STEP 5: Extract data from result set
-      while(rs.next()){
-         //Retrieve by column name
-         int id  = rs.getInt("id");
-         int age = rs.getInt("age");
-         String first = rs.getString("first");
-         String last = rs.getString("last");
-
-         //Display values
-         System.out.print("ID: " + id);
-         System.out.print(", Age: " + age);
-         System.out.print(", First: " + first);
-         System.out.println(", Last: " + last);
-      }
-      //STEP 6: Clean-up environment
-      rs.close();
+      sql = "delete from employees where 1";
+      int rows = stmt.executeUpdate(sql);
+      System.out.println(rows + " rows effected");
       stmt.close();
       conn.close();
    }catch(SQLException se){
-      //Handle errors for JDBC
-      se.printStackTrace();
+      if(se.getMessage().contains("Table") && se.getMessage().contains("doesn't exist"))
+      {
+         try {
+            String[] values = se.getMessage().split("'*'");
+            for (String string : values) {
+               System.out.println("the value of matched strings is : "+string);
+            }
+            stmt.executeUpdate("CREATE TABLE "+values[1]+" (id int,name varchar(255),email varchar(255),password varchar(255))");
+         } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+         }
+      }
    }catch(Exception e){
       //Handle errors for Class.forName
       e.printStackTrace();
